@@ -6,7 +6,6 @@ input = Nokogiri::HTML5(URI.open("input.html")).text
 input = input.split("\n")
 
 # test data
-
 test_input = ["1abc2",
 "pqr3stu8vwx",
 "a1b2c3d4e5f",
@@ -33,4 +32,4 @@ input.each do | coordinate_string |
   coordinate_numbers << first_number.concat(last_number).to_i
 end
 
-puts "The sum for the calibration document is #{coordinate_numbers.sum}"
+# puts "The sum for the calibration document is #{coordinate_numbers.sum}"
