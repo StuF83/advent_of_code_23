@@ -19,6 +19,7 @@ game_conditions = {
 }
 
 valid_games = []
+set_power = []
 
 def game_string_to_array(string)
   string.split(": ")[1].split(";").map(&:strip)
@@ -44,11 +45,33 @@ def valid_game?(game, game_conditions)
   true
 end
 
+def minimum_cubes(game)
+  empty_bag = {
+  "red" => 0,
+  "green" => 0,
+  "blue" => 0
+  }
+  game.each do | draw |
+    draw.each do | key, value |
+      empty_bag[key] = value if value > empty_bag[key]
+    end
+  end
+  empty_bag
+end
+
 input.each_with_index do | game, index |
   game_array = game_string_to_array(game)
   game = game_array.map { | game | draw_to_hash(game)}
-  # p "Game #{index + 1}"
   valid_games << (index + 1) if valid_game?(game, game_conditions)
 end
 
-p valid_games.sum
+input.each do | game |
+  game_array = game_string_to_array(game)
+  game = game_array.map { | game | draw_to_hash(game)}
+  cubes = []
+  minimum_cubes(game).each_value { |value| cubes.push(value)}
+  set_power << cubes.reduce(:*)
+end
+
+puts "The Sum of the game ID's is #{valid_games.sum}"
+puts "The Sum of the set powers is #{set_power.sum}"
