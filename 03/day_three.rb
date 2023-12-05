@@ -38,50 +38,12 @@ def remove_number_from_line(line)
   line = line.gsub(/(?<=[^a-zA-Z.\d])\d+|\d+(?=[^a-zA-Z.\d])/) { | match | "."*match.length}
 end
 
-def check_previous_line(line, previous_line)
+def check_adjacent_line(line, adjacent_line)
   diagonal_c = []
-  previous_line.split("").each_with_index do |ch, index |
+  adjacent_line.split("").each_with_index do |ch, index |
     diagonal = index if ch.match(/[^a-zA-Z.\d]/)
     diagonal_c << [(diagonal - 1), (diagonal), (diagonal + 1)] if diagonal
   end
-  # p diagonal_c
-  hit = []
-  line_dup = line.dup
-  if  line.scan(/\d+/)[0] && diagonal_c.empty? == false
-    # p line.scan(/\d+/)
-      line.scan(/\d+/).each do | result |
-        # p result
-        # number_length = result.length - 1
-        # p line.index(/\d+/)
-        number_index = Range.new(line.index(/\d+/), (line.index(/\d+/) + (result.length - 1))).to_a if line.scan(/\d+/)[0]
-        # p number_index
-        diagonal_c.each do | symbol |
-          if number_index.intersect?(symbol)
-            # p "#{result} = #{number_index}"
-            # p symbol
-            number_index.each do |i|
-              line_dup[i] = "."
-            end
-
-            # p line_dup
-            hit << result
-          end
-        end
-        # p hit
-        line.sub!(result, "."* result.length)
-      end
-  end
-  # p hit
-  return line_dup, hit
-end
-
-def check_next_line(line, next_line)
-  diagonal_c = []
-  next_line.split("").each_with_index do |ch, index |
-    diagonal = index if ch.match(/[^a-zA-Z.\d]/)
-    diagonal_c << [(diagonal - 1), (diagonal), (diagonal + 1)] if diagonal
-  end
-  # p diagonal_c
   hit = []
   line_dup = line.dup
   if  line.scan(/\d+/)[0] && diagonal_c.empty? == false
@@ -98,37 +60,31 @@ def check_next_line(line, next_line)
       end
       line.sub!(result, "."* result.length)
     end
-end
+  end
 return line_dup, hit
 end
 
-
-
 input.each_with_index do | line, index |
-  # if index ==72
-
-    find_numbers_in_line(line).each {| match | machine_parts << match.to_i }
-    line = remove_number_from_line(line)
-    previous_line = input[index - 1] if index > 0
-    next_line = input[index + 1] if index < (input.length - 1 )
-    # p previous_line
-    # p line
-    # p next_line
-    if previous_line
-      result = check_previous_line(line, previous_line)
-      line = result[0]
-      parts = result[1]
-      parts.each { | part | machine_parts << part.to_i}
-    end
-    if next_line
-      result = check_next_line(line, next_line)
-      line = result[0]
-      parts = result[1]
-      parts.each { | part | machine_parts << part.to_i}
-    end
-    # p index + 1
-    p line
-  # end
+  find_numbers_in_line(line).each {| match | machine_parts << match.to_i }
+  line = remove_number_from_line(line)
+  previous_line = input[index - 1] if index > 0
+  next_line = input[index + 1] if index < (input.length - 1 )
+  if previous_line
+    result = check_adjacent_line(line, previous_line)
+    line = result[0]
+    parts = result[1]
+    parts.each { | part | machine_parts << part.to_i}
+  end
+  if next_line
+    result = check_adjacent_line(line, next_line)
+    line = result[0]
+    parts = result[1]
+    parts.each { | part | machine_parts << part.to_i}
+  end
 end
-# p machine_parts
-p machine_parts.sum
+
+# puts "The correct answer is 527446"
+# p machine_parts.sum
+
+answer = 527446
+puts "Correct" if machine_parts.sum == answer
