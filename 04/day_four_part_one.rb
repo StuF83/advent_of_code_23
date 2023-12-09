@@ -17,6 +17,7 @@ input = input.split("\n")
 # p input
 
 total = []
+total_cards = 0
 
 class Card
   attr_reader :id, :guesses, :numbers
@@ -47,7 +48,7 @@ class Card
     if wins < 1
       0
     else
-      (1*2)**(wins - 1)
+      2**(wins - 1)
     end
   end
 
@@ -62,16 +63,19 @@ card_pile.default = 0
 
 input.each do | line |
   card = Card.parse(line)
+  total << card.score
+end
+
+input.each do | line |
+  card = Card.parse(line)
   card_pile[card.id] += 1
   card_pile[card.id].times do
     card.bonus_cards.each { | id | card_pile[id] += 1 }
   end
 end
 
-p card_pile
-total_cards = 0
 card_pile.each_value { | value | total_cards += value}
 p total_cards
 
-# p total.sum
+p total.sum
 # 1219459 is too low
