@@ -43,11 +43,32 @@ humidity-to-location map:
 56 93 4
 INPUT
 
-input = input.split("\n\n").map { |string| string.split("\n")}
+
+seeds = input.split("\n\n").map { |string| string.split("\n")}
+seeds = seeds[0][0].split(":")
+seed_numbers = seeds[1].strip.split(" ").map {|number| number.to_i}
+
+array_of_all_maps = []
+maps_string = input.split("map:")
+map_numbers = maps_string.map! {|map| map.scan(/\d+/)}
+map_numbers.each { |numbers_array| numbers_array.map! {|number| number.to_i}}.shift
+map_numbers.each do |number_array|
+  map = []
+  number_array.each_slice(3) { |numbers| map << numbers}
+  array_of_all_maps << map
+end
+
+array_of_all_maps.each { |map| p map.count}
+
+def convert(input, map)
+  start_ranges = []
+  map.each do | line |
+    start_ranges << Range.new(line[1], (line[1] + line[2]))
+  end
+  p start_ranges
+end
+
+convert(5, array_of_all_maps[0])
 
 
-
-
-
-
-puts Time.now - t0
+puts "Time elapsed #{Time.now - t0}"
