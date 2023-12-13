@@ -58,17 +58,34 @@ map_numbers.each do |number_array|
   array_of_all_maps << map
 end
 
-array_of_all_maps.each { |map| p map.count}
+# array_of_all_maps.each { |map| p map.count}
 
 def convert(input, map)
   start_ranges = []
+  destination_ranges = []
+  difference = []
   map.each do | line |
     start_ranges << Range.new(line[1], (line[1] + line[2]))
+    destination_ranges << Range.new(line[0], (line[0] + line[2]))
+    difference << line[0] - line[1]
   end
-  p start_ranges
+  output = input
+
+  start_ranges.each_with_index do |range, index|
+    if range.include?(input)
+      output = input + difference[index]
+    end
+  end
+  p output
 end
 
-convert(5, array_of_all_maps[0])
+seed_numbers.each do |seed_number|
+  # array_of_all_maps.each do |map|
+  #   convert(seed_number, map)
+  # end
+  # convert(seed_number, array_of_all_maps[0])
+end
+
 
 
 puts "Time elapsed #{Time.now - t0}"
